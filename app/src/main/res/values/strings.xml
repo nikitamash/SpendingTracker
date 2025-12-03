@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Spending Tracker</string>
+    
+    <!-- MainActivity -->
+    <string name="amount_hint">$0.00</string>
+    <string name="save_button">SAVE</string>
+    <string name="category_label">Category</string>
+    <string name="view_summary">All Expenses</string>
+    
+    <!-- Categories -->
+    <string name="category_food">Food</string>
+    <string name="category_restaurants">Restaurants</string>
+    <string name="category_drinks">Drinks</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_transport">Transport</string>
+    <string name="category_utilities">Utilities</string>
+    <string name="category_bank_card">Bank Card</string>
+    <string name="category_entertainment">Leisure</string>
+    
+    <!-- SummaryActivity -->
+    <string name="total_spending">Total Spending</string>
+    <string name="categories_label">Categories</string>
+    <string name="month_label">April</string>
+    
+    <!-- Error messages -->
+    <string name="error_amount_empty">Please enter an amount</string>
+    <string name="error_amount_invalid">Please enter a valid amount</string>
+    <string name="error_category_empty">Please select a category</string>
+    <string name="success_saved">Expense saved successfully!</string>
+    <string name="login_title">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_error">Invalid username or password</string>
+    <string name="login_empty_error">Please fill in all fields</string>
+</resources>

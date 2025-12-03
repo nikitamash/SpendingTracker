@@ -1,0 +1,175 @@
+package com.nikita.app
+
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.nikita.app.data.AppDatabase
+import com.nikita.app.data.Category
+import com.nikita.app.databinding.ActivityMainBinding
+import com.nikita.app.presenter.MainContract
+import com.nikita.app.presenter.MainPresenter
+
+/**
+ * MainActivity for adding expenses
+ */
+class MainActivity : AppCompatActivity(), MainContract.View {
+    
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var presenter: MainPresenter
+    private var selectedCategory: Category? = null
+    private var selectedDate: Long = System.currentTimeMillis()
+    private val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault())
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        // Initialize presenter
+        val database = AppDatabase.getDatabase(this)
+        presenter = MainPresenter(this, database.expenseDao())
+        
+        setupCategorySelection()
+        setupButtons()
+        setupDateButton()
+        updateDateText()
+    }
+    
+    private fun setupDateButton() {
+        binding.dateButton.setOnClickListener {
+            val calendar = java.util.Calendar.getInstance()
+            calendar.timeInMillis = selectedDate
+            
+            val year = calendar.get(java.util.Calendar.YEAR)
+            val month = calendar.get(java.util.Calendar.MONTH)
+            val day = calendar.get(java.util.Calendar.DAY_OF_MONTH)
+            
+            android.app.DatePickerDialog(this, R.style.Theme_SpendingTracker_Dialog_Light, { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                
+                // Show TimePicker after DatePicker
+                val hour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
+                val minute = calendar.get(java.util.Calendar.MINUTE)
+                
+                android.app.TimePickerDialog(this, R.style.Theme_SpendingTracker_Dialog_Light, { _, selectedHour, selectedMinute ->
+                    calendar.set(java.util.Calendar.HOUR_OF_DAY, selectedHour)
+                    calendar.set(java.util.Calendar.MINUTE, selectedMinute)
+                    
+                    selectedDate = calendar.timeInMillis
+                    updateDateText()
+                }, hour, minute, true).show()
+                
+            }, year, month, day).show()
+        }
+    }
+    
+    private fun updateDateText() {
+        val calendar = java.util.Calendar.getInstance()
+        val currentCalendar = java.util.Calendar.getInstance()
+        
+        calendar.timeInMillis = selectedDate
+        
+        val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        val timeString = timeFormat.format(java.util.Date(selectedDate))
+        
+        if (calendar.get(java.util.Calendar.YEAR) == currentCalendar.get(java.util.Calendar.YEAR) &&
+            calendar.get(java.util.Calendar.DAY_OF_YEAR) == currentCalendar.get(java.util.Calendar.DAY_OF_YEAR)) {
+            binding.dateText.text = "Today $timeString"
+        } else {
+            binding.dateText.text = "${dateFormat.format(java.util.Date(selectedDate))} $timeString"
+        }
+    }
+    
+    private fun setupCategorySelection() {
+        binding.categoryFood.setOnClickListener {
+            selectCategory(Category.FOOD, binding.categoryFood)
+        }
+        
+        binding.categoryRestaurants.setOnClickListener {
+            selectCategory(Category.RESTAURANTS, binding.categoryRestaurants)
+        }
+        
+        binding.categoryDrinks.setOnClickListener {
+            selectCategory(Category.DRINKS, binding.categoryDrinks)
+        }
+        
+        binding.categoryShopping.setOnClickListener {
+            selectCategory(Category.SHOPPING, binding.categoryShopping)
+        }
+        
+        binding.categoryTransport.setOnClickListener {
+            selectCategory(Category.TRANSPORT, binding.categoryTransport)
+        }
+        
+        binding.categoryUtilities.setOnClickListener {
+            selectCategory(Category.UTILITIES, binding.categoryUtilities)
+        }
+
+        binding.categoryBankCard.setOnClickListener {
+            selectCategory(Category.BANK_CARD, binding.categoryBankCard)
+        }
+        
+        binding.categoryEntertainment.setOnClickListener {
+            selectCategory(Category.ENTERTAINMENT, binding.categoryEntertainment)
+        }
+    }
+    
+    private fun selectCategory(category: Category, view: android.view.View) {
+        // Deselect all categories
+        binding.categoryFood.isSelected = false
+        binding.categoryRestaurants.isSelected = false
+        binding.categoryDrinks.isSelected = false
+        binding.categoryShopping.isSelected = false
+        binding.categoryTransport.isSelected = false
+        binding.categoryUtilities.isSelected = false
+        binding.categoryBankCard.isSelected = false
+        binding.categoryEntertainment.isSelected = false
+        
+        // Select the clicked category
+        view.isSelected = true
+        selectedCategory = category
+    }
+    
+    private fun setupButtons() {
+        binding.saveButton.setOnClickListener {
+            val amount = binding.amountInput.text.toString()
+            val description = binding.descriptionInput.text.toString()
+            presenter.saveExpense(amount, selectedCategory, description, selectedDate)
+        }
+        
+        binding.viewSummaryButton.setOnClickListener {
+            val intent = Intent(this, SummaryActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    
+    override fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    
+    override fun showSuccess() {
+        Toast.makeText(this, getString(R.string.success_saved), Toast.LENGTH_SHORT).show()
+    }
+    
+    override fun clearInput() {
+        binding.amountInput.text?.clear()
+        binding.descriptionInput.text?.clear()
+        binding.categoryFood.isSelected = false
+        binding.categoryRestaurants.isSelected = false
+        binding.categoryDrinks.isSelected = false
+        binding.categoryShopping.isSelected = false
+        binding.categoryTransport.isSelected = false
+        binding.categoryUtilities.isSelected = false
+        binding.categoryBankCard.isSelected = false
+        binding.categoryEntertainment.isSelected = false
+        selectedCategory = null
+        selectedDate = System.currentTimeMillis()
+        updateDateText()
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
+}

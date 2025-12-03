@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme with black and yellow styling -->
+    <style name="Theme.SpendingTracker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color (Yellow) -->
+        <item name="colorPrimary">@color/yellow_primary</item>
+        <item name="colorPrimaryVariant">@color/yellow_dark</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/yellow_primary</item>
+        <item name="colorSecondaryVariant">@color/yellow_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Background colors -->
+        <item name="android:windowBackground">@color/black_background</item>
+        <item name="android:colorBackground">@color/black_background</item>
+        <item name="colorSurface">@color/dark_gray</item>
+        <item name="colorOnSurface">@color/white</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/black_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Black and Yellow Theme Colors -->
+    <color name="yellow_primary">#F9C74F</color>
+    <color name="yellow_dark">#E5B03D</color>
+    <color name="black_background">#1A1A1A</color>
+    <color name="dark_gray">#2D2D2D</color>
+    <color name="light_gray">#B0B0B0</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
