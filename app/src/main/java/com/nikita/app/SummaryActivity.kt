@@ -67,7 +67,14 @@ class SummaryActivity : AppCompatActivity(), SummaryContract.View {
     
     private fun setupRecyclerView() {
         categoryAdapter = CategorySummaryAdapter { category ->
-            presenter.deleteCategory(category)
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Delete Category")
+                .setMessage("Are you sure you want to delete?")
+                .setPositiveButton("Yes") { _, _ ->
+                    presenter.deleteCategory(category)
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
         binding.categoriesRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@SummaryActivity)
