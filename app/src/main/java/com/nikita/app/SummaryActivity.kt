@@ -13,17 +13,18 @@ import com.nikita.app.presenter.SummaryPresenter
 import com.nikita.app.ui.CategorySummaryAdapter
 import java.text.NumberFormat
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 /**
  * SummaryActivity for viewing expense totals and breakdowns
  */
 class SummaryActivity : AppCompatActivity(), SummaryContract.View {
-    
+
     private lateinit var binding: ActivitySummaryBinding
     private lateinit var presenter: SummaryPresenter
     private lateinit var categoryAdapter: CategorySummaryAdapter
     private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("sq", "AL"))
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySummaryBinding.inflate(layoutInflater)
@@ -33,29 +34,20 @@ class SummaryActivity : AppCompatActivity(), SummaryContract.View {
         val database = AppDatabase.getDatabase(this)
         presenter = SummaryPresenter(this, database.expenseDao())
         
+        // Fetch exchange rates
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            com.nikita.app.utils.CurrencyManager.fetchRates()
+            // Refresh data after fetching rates
+            runOnUiThread {
+                presenter.loadSummaryData(System.currentTimeMillis())
+            }
+        }
+        
         setupRecyclerView()
         setupBackButton()
         setupLogoutButton()
-        setupMonthSelector()
+
         presenter.loadSummaryData(System.currentTimeMillis())
-    }
-    
-    private fun setupMonthSelector() {
-        binding.calendarButton.setOnClickListener {
-            val calendar = java.util.Calendar.getInstance()
-            
-            val year = calendar.get(java.util.Calendar.YEAR)
-            val month = calendar.get(java.util.Calendar.MONTH)
-            val day = calendar.get(java.util.Calendar.DAY_OF_MONTH)
-            
-            android.app.DatePickerDialog(this, R.style.Theme_SpendingTracker_Dialog_Light, { _, selectedYear, selectedMonth, _ ->
-                calendar.set(java.util.Calendar.YEAR, selectedYear)
-                calendar.set(java.util.Calendar.MONTH, selectedMonth)
-                calendar.set(java.util.Calendar.DAY_OF_MONTH, 1) // Default to 1st of month
-                
-                presenter.loadSummaryData(calendar.timeInMillis)
-            }, year, month, day).show()
-        }
     }
     
     private fun setupBackButton() {
@@ -84,7 +76,7 @@ class SummaryActivity : AppCompatActivity(), SummaryContract.View {
     }
     
     override fun showTotalSpending(total: Double) {
-        binding.totalSpendingText.text = currencyFormat.format(total)
+        binding.totalSpendingText.text = com.nikita.app.utils.CurrencyManager.formatAmount(this, total)
     }
     
     override fun showMonthName(month: String) {

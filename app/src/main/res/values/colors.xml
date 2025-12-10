@@ -7,5 +7,7 @@
     <color name="dark_gray">#2D2D2D</color>
     <color name="light_gray">#B0B0B0</color>
     <color name="white">#FFFFFF</color>
+    <color name="blue">#2196F3</color>
+    <color name="brown_bun">#5D4037</color>
     <color name="black">#000000</color>
 </resources>

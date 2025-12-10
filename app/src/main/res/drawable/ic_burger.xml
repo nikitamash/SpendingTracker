@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Bottom Bun (Dark Brown) -->
+    <path
+        android:fillColor="@color/brown_bun"
+        android:pathData="M4,17 C4,18.66 5.34,20 7,20 L17,20 C18.66,20 20,18.66 20,17 L20,16 L4,16 L4,17 Z"/>
+        
+    <!-- Meat (Reddish Brown) -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M3,14 L21,14 L21,16 L3,16 Z"/>
+        
+    <!-- Cheese (Yellow) -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M3,13 L21,13 L21,14 L3,14 Z"/>
+        
+    <!-- Lettuce (Green) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M3,11 L21,11 L21,13 L3,13 Z"/>
+        
+    <!-- Top Bun (Dark Brown) -->
+    <path
+        android:fillColor="@color/brown_bun"
+        android:pathData="M4,11 L20,11 C20,6.58 16.42,3 12,3 C7.58,3 4,6.58 4,11 Z"/>
+        
+    <!-- Sesame Seeds (White/Light) -->
+    <path
+        android:fillColor="#D7CCC8"
+        android:pathData="M10,6 L11,6 L11,7 L10,7 Z M14,6 L15,6 L15,7 L14,7 Z M12,8 L13,8 L13,9 L12,9 Z"/>
+</vector>

@@ -43,6 +43,7 @@ class BarChartView @JvmOverloads constructor(
 
     fun setData(newData: List<BarData>) {
         data = newData
+        requestLayout() // Trigger measurement for new width
         invalidate()
     }
 
@@ -55,17 +56,19 @@ class BarChartView @JvmOverloads constructor(
         val maxValue = data.maxOfOrNull { it.value } ?: 1f
         val safeMaxValue = if (maxValue == 0f) 1f else maxValue
 
-        // Center the chart horizontally
-        val totalChartWidth = (data.size * barWidth) + ((data.size - 1) * barSpacing)
-        var startX = (width - totalChartWidth) / 2f
+        // Calculate total content width
+        val totalChartWidth = (data.size * barWidth) + ((data.size - 1) * barSpacing) + paddingLeft + paddingRight
         
-        // If chart is wider than screen, start from left padding (scrolling not implemented for simple view)
-        if (startX < paddingLeft) startX = paddingLeft.toFloat()
-
+        // Start drawing from padding left by default
+        var startX = paddingLeft.toFloat()
+        
+        // If content fits within the view, center it
+        if (totalChartWidth < width) {
+            startX = (width - totalChartWidth) / 2f + paddingLeft
+        }
+        
         data.forEach { item ->
             // Calculate bar height relative to max value
-            // Min height of 10px so 0 values are visible as small bars or just hidden? 
-            // Let's make 0 values have a tiny height or just 0.
             val barHeight = (item.value / safeMaxValue) * availableHeight
             
             val left = startX
@@ -104,9 +107,18 @@ class BarChartView @JvmOverloads constructor(
     }
     
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // Simple measurement
         val desiredHeight = (200 * resources.displayMetrics.density).toInt()
-        val width = MeasureSpec.getSize(widthMeasureSpec)
+        
+        // Calculate required width based on data
+        val contentWidth = if (data.isNotEmpty()) {
+            (data.size * barWidth) + ((data.size - 1) * barSpacing) + paddingLeft + paddingRight
+        } else {
+            0f
+        }
+        
+        val desiredWidth = contentWidth.toInt().coerceAtLeast(suggestedMinimumWidth)
+
+        val width = resolveSize(desiredWidth, widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         

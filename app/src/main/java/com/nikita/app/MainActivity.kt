@@ -9,6 +9,7 @@ import com.nikita.app.data.Category
 import com.nikita.app.databinding.ActivityMainBinding
 import com.nikita.app.presenter.MainContract
 import com.nikita.app.presenter.MainPresenter
+import kotlinx.coroutines.launch
 
 /**
  * MainActivity for adding expenses
@@ -30,11 +31,41 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         val database = AppDatabase.getDatabase(this)
         presenter = MainPresenter(this, database.expenseDao())
         
+        // Fetch exchange rates
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            com.nikita.app.utils.CurrencyManager.fetchRates()
+        }
+        
         setupCategorySelection()
         setupButtons()
         setupDateButton()
+        setupCurrencyButton()
         updateDateText()
+        updateCurrencyDisplay()
     }
+
+    private fun setupCurrencyButton() {
+        binding.currencyButton.setOnClickListener {
+            val currencies = com.nikita.app.utils.CurrencyManager.SupportedCurrency.values()
+            val items = currencies.map { it.displayName }.toTypedArray()
+            
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Select Currency")
+                .setItems(items) { _, which ->
+                    val selectedCurrency = currencies[which]
+                    com.nikita.app.utils.CurrencyManager.saveCurrency(this, selectedCurrency)
+                    updateCurrencyDisplay()
+                }
+                .show()
+        }
+    }
+
+    private fun updateCurrencyDisplay() {
+        val currency = com.nikita.app.utils.CurrencyManager.getCurrency(this)
+        binding.amountInput.hint = "0 ${currency.symbol}"
+    }
+
+
     
     private fun setupDateButton() {
         binding.dateButton.setOnClickListener {
@@ -133,9 +164,17 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     
     private fun setupButtons() {
         binding.saveButton.setOnClickListener {
-            val amount = binding.amountInput.text.toString()
-            val description = binding.descriptionInput.text.toString()
-            presenter.saveExpense(amount, selectedCategory, description, selectedDate)
+            val amountStr = binding.amountInput.text.toString()
+            if (amountStr.isNotEmpty()) {
+                val amount = amountStr.toDouble()
+                val currentCurrency = com.nikita.app.utils.CurrencyManager.getCurrency(this)
+                val amountInLek = com.nikita.app.utils.CurrencyManager.convertToLek(amount, currentCurrency)
+                
+                val description = binding.descriptionInput.text.toString()
+                presenter.saveExpense(amountInLek.toString(), selectedCategory, description, selectedDate)
+            } else {
+                showError("Please enter an amount")
+            }
         }
         
         binding.viewSummaryButton.setOnClickListener {

@@ -1,0 +1,24 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Straw -->
+    <path
+        android:fillColor="@color/blue"
+        android:pathData="M13,2 L15,2 L14,8 L12,8 Z"/>
+    <path
+        android:fillColor="@color/blue"
+        android:pathData="M15,2 L18,5 L17,6 L14,3 Z"/>
+        
+    <!-- Cup -->
+    <path
+        android:fillColor="#F44336"
+        android:pathData="M5,8 L19,8 L17,22 L7,22 Z"/>
+        
+    <!-- Lid/Top rim -->
+    <path
+        android:fillColor="#D32F2F"
+        android:pathData="M4,8 L20,8 L20,9 L4,9 Z"/>
+</vector>

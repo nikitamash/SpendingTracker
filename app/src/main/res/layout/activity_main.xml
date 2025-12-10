@@ -12,15 +12,33 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Title -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="32dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="36sp"
+                android:textStyle="bold"/>
+
+            <ImageButton
+                android:id="@+id/currencyButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_gear" 
+                app:tint="@color/yellow_primary"
+                android:padding="8dp"
+                android:contentDescription="Select Currency"/>
+        </LinearLayout>
 
         <!-- Amount Input -->
         <EditText
@@ -129,13 +147,12 @@
             android:clickable="true"
             android:focusable="true">
 
-            <TextView
+            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
-                android:text="🍴"
-                android:textSize="24sp"
-                android:gravity="center"
+                android:src="@drawable/ic_burger"
+                android:padding="8dp"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
@@ -159,13 +176,12 @@
             android:clickable="true"
             android:focusable="true">
 
-            <TextView
+            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
-                android:text="🍹"
-                android:textSize="24sp"
-                android:gravity="center"
+                android:src="@drawable/ic_soda"
+                android:padding="8dp"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
@@ -189,13 +205,12 @@
             android:clickable="true"
             android:focusable="true">
 
-            <TextView
+            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
-                android:text="🍽️"
-                android:textSize="24sp"
-                android:gravity="center"
+                android:src="@drawable/ic_lantern"
+                android:padding="8dp"
                 android:layout_marginEnd="16dp"/>
 
             <TextView
@@ -223,8 +238,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
-                android:text="🎫"
-                android:textSize="24sp"
+                android:text="🎡"
+                android:textSize="30sp"
                 android:gravity="center"
                 android:layout_marginEnd="16dp"/>
 
@@ -283,7 +298,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
                 android:text="🛍️"
-                android:textSize="24sp"
+                android:textSize="30sp"
                 android:gravity="center"
                 android:layout_marginEnd="16dp"/>
 
@@ -313,7 +328,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
                 android:text="🚗"
-                android:textSize="24sp"
+                android:textSize="30sp"
                 android:gravity="center"
                 android:layout_marginEnd="16dp"/>
 
@@ -343,7 +358,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/category_icon_background"
                 android:text="💡"
-                android:textSize="24sp"
+                android:textSize="30sp"
                 android:gravity="center"
                 android:layout_marginEnd="16dp"/>
 

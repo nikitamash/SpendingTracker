@@ -54,7 +54,7 @@ class CategorySummaryAdapter(
                 binding.categoryIcon.text = categoryTotal.category.iconRes
             }
             binding.categoryName.text = categoryTotal.category.displayName
-            binding.categoryAmount.text = currencyFormat.format(categoryTotal.total)
+            binding.categoryAmount.text = com.nikita.app.utils.CurrencyManager.formatAmount(binding.root.context, categoryTotal.total)
             
             // Reduce text size for amounts over 1,000
             if (categoryTotal.total >= 1000) {
