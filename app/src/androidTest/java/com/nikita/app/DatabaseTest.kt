@@ -3,6 +3,7 @@ package com.nikita.app
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nikita.app.data.AppDatabase
 import com.nikita.app.data.Category
 import com.nikita.app.data.Expense
@@ -13,27 +14,19 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import java.io.IOException
 
-/**
- * Example local unit test, which will execute on the development machine (host) using Robolectric.
- */
-@RunWith(RobolectricTestRunner::class)
-@org.robolectric.annotation.Config(sdk = [34])
-class ExampleUnitTest {
+@RunWith(AndroidJUnit4::class)
+class DatabaseTest {
     private lateinit var expenseDao: ExpenseDao
     private lateinit var db: AppDatabase
 
     @Before
     fun createDb() {
-        // Use Robolectric's ApplicationProvider to get Context
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
             context, AppDatabase::class.java
-        )
-        .allowMainThreadQueries() // Allow main thread queries for testing
-        .build()
+        ).build()
         expenseDao = db.expenseDao()
     }
 
@@ -55,8 +48,8 @@ class ExampleUnitTest {
         expenseDao.insert(expense)
 
         val byCategory = expenseDao.getAllExpenses()
-        assertEquals(100.0, byCategory[0].amount, 0.0)
-        assertEquals(Category.FOOD, byCategory[0].category)
+        assertEquals(byCategory[0].amount, 100.0, 0.0)
+        assertEquals(byCategory[0].category, Category.FOOD)
     }
     
     @Test
@@ -72,7 +65,7 @@ class ExampleUnitTest {
         expenseDao.insert(expense)
         
         val expenses = expenseDao.getAllExpenses()
-        assertEquals(Category.RESTAURANTS, expenses[0].category)
-        assertEquals(Category.DRINKS, expenses[0].secondaryCategory)
+        assertEquals(expenses[0].category, Category.RESTAURANTS)
+        assertEquals(expenses[0].secondaryCategory, Category.DRINKS)
     }
 }

@@ -51,13 +51,28 @@ class SummaryPresenter(
                 view.showTotalSpending(total)
                 
                 // Load category breakdown for current month
-                val categoryTotals = withContext(Dispatchers.IO) {
-                    expenseDao.getSpendingByCategory(startDate, endDate)
+                // Load all expenses for current month manually to handle split categories
+                val expenses = withContext(Dispatchers.IO) {
+                    expenseDao.getExpenses(startDate, endDate)
                 }
                 
-                // Prepare chart data: Show all categories
-                val totalsMap = categoryTotals.associate { it.category to it.total }
-                val maxCategory = categoryTotals.maxByOrNull { it.total }?.category
+                val totalsMap = mutableMapOf<Category, Double>()
+                
+                expenses.forEach { expense ->
+                    if (expense.secondaryCategory != null) {
+                        val splitAmount = expense.amount / 2
+                        val cat1 = expense.category
+                        val cat2 = expense.secondaryCategory
+                        totalsMap[cat1] = (totalsMap[cat1] ?: 0.0) + splitAmount
+                        totalsMap[cat2] = (totalsMap[cat2] ?: 0.0) + splitAmount
+                    } else {
+                        val cat = expense.category
+                        totalsMap[cat] = (totalsMap[cat] ?: 0.0) + expense.amount
+                    }
+                }
+                
+                // Find max category
+                val maxCategory = totalsMap.maxByOrNull { it.value }?.key
 
                 // Create a list of all categories with their totals (including $0)
                 val allCategoryTotals = Category.values().map { category ->

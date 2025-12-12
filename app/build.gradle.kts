@@ -39,6 +39,11 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -49,6 +54,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.test.core)
     ksp(libs.androidx.room.compiler)
     
     // Coroutines
@@ -59,6 +65,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

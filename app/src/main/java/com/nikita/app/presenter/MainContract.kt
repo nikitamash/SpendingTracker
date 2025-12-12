@@ -14,7 +14,7 @@ interface MainContract {
     }
     
     interface Presenter {
-        fun saveExpense(amount: String, category: Category?, description: String, date: Long)
+        fun saveExpense(amount: String, categories: List<Category>, description: String, date: Long)
         fun onDestroy()
     }
 }

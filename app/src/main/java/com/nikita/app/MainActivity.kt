@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     
     private lateinit var binding: ActivityMainBinding
     private lateinit var presenter: MainPresenter
-    private var selectedCategory: Category? = null
+    private val selectedCategories: MutableList<Category> = mutableListOf()
     private var selectedDate: Long = System.currentTimeMillis()
     private val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault())
     
@@ -146,20 +146,32 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
     }
     
+    private fun getCategoryView(category: Category): android.view.View {
+        return when (category) {
+            Category.FOOD -> binding.categoryFood
+            Category.RESTAURANTS -> binding.categoryRestaurants
+            Category.DRINKS -> binding.categoryDrinks
+            Category.SHOPPING -> binding.categoryShopping
+            Category.TRANSPORT -> binding.categoryTransport
+            Category.UTILITIES -> binding.categoryUtilities
+            Category.BANK_CARD -> binding.categoryBankCard
+            Category.ENTERTAINMENT -> binding.categoryEntertainment
+        }
+    }
+
     private fun selectCategory(category: Category, view: android.view.View) {
-        // Deselect all categories
-        binding.categoryFood.isSelected = false
-        binding.categoryRestaurants.isSelected = false
-        binding.categoryDrinks.isSelected = false
-        binding.categoryShopping.isSelected = false
-        binding.categoryTransport.isSelected = false
-        binding.categoryUtilities.isSelected = false
-        binding.categoryBankCard.isSelected = false
-        binding.categoryEntertainment.isSelected = false
-        
-        // Select the clicked category
-        view.isSelected = true
-        selectedCategory = category
+        if (selectedCategories.contains(category)) {
+            selectedCategories.remove(category)
+            view.isSelected = false
+        } else {
+            if (selectedCategories.size >= 2) {
+                // Remove the first selected category to handle max 2 selection
+                val removed = selectedCategories.removeAt(0)
+                getCategoryView(removed).isSelected = false 
+            }
+            selectedCategories.add(category)
+            view.isSelected = true
+        }
     }
     
     private fun setupButtons() {
@@ -171,7 +183,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                 val amountInLek = com.nikita.app.utils.CurrencyManager.convertToLek(amount, currentCurrency)
                 
                 val description = binding.descriptionInput.text.toString()
-                presenter.saveExpense(amountInLek.toString(), selectedCategory, description, selectedDate)
+                presenter.saveExpense(amountInLek.toString(), selectedCategories, description, selectedDate)
             } else {
                 showError("Please enter an amount")
             }
@@ -194,15 +206,10 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     override fun clearInput() {
         binding.amountInput.text?.clear()
         binding.descriptionInput.text?.clear()
-        binding.categoryFood.isSelected = false
-        binding.categoryRestaurants.isSelected = false
-        binding.categoryDrinks.isSelected = false
-        binding.categoryShopping.isSelected = false
-        binding.categoryTransport.isSelected = false
-        binding.categoryUtilities.isSelected = false
-        binding.categoryBankCard.isSelected = false
-        binding.categoryEntertainment.isSelected = false
-        selectedCategory = null
+        selectedCategories.forEach { category ->
+             getCategoryView(category).isSelected = false
+        }
+        selectedCategories.clear()
         selectedDate = System.currentTimeMillis()
         updateDateText()
     }

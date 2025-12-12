@@ -1,10 +1,12 @@
 package com.nikita.app
 
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import org.junit.Assert.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 
@@ -14,31 +16,26 @@ import org.junit.Rule
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class MainTests {
+class ExampleInstrumentedTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(LoginActivity::class.java)
-    val loginPage = LoginPage()
 
     @Test
     fun testLoginFlow() {
+        val loginPage = LoginPage()
+        val username = "Nikita"
+        val password = "12092002SPT"
 
         // Enter values
-        loginPage.enterUsername("Nikita")
-        loginPage.enterPassword("12092002SPT")
+        loginPage.enterUsername(username)
+        loginPage.enterPassword(password)
 
         // Verify values are present
-        loginPage.verifyUsername("Nikita")
-        loginPage.verifyPassword("12092002SPT")
+        loginPage.verifyUsername(username)
+        loginPage.verifyPassword(password)
 
         // Click login
-        loginPage.clickLoginButton()
-    }
-
-    @Test
-    fun testInvalidFlow(){
-        loginPage.enterUsername("Tester")
-        loginPage.enterPassword("wrong")
         loginPage.clickLoginButton()
     }
 }

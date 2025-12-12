@@ -19,7 +19,7 @@ class MainPresenter(
     
     private val presenterScope = CoroutineScope(Dispatchers.Main + Job())
     
-    override fun saveExpense(amount: String, category: Category?, description: String, date: Long) {
+    override fun saveExpense(amount: String, categories: List<Category>, description: String, date: Long) {
         // Validate input
         if (amount.isBlank()) {
             view.showError("Please enter an amount")
@@ -32,9 +32,14 @@ class MainPresenter(
             return
         }
         
-        if (category == null) {
-            view.showError("Please select a category")
+        if (categories.isEmpty()) {
+            view.showError("Please select at least one category")
             return
+        }
+
+        if (categories.size > 2) {
+             view.showError("Please select at most two categories")
+             return
         }
         
         // Save to database
@@ -42,7 +47,8 @@ class MainPresenter(
             try {
                 val expense = Expense(
                     amount = amountValue,
-                    category = category,
+                    category = categories[0],
+                    secondaryCategory = if (categories.size > 1) categories[1] else null,
                     description = description,
                     timestamp = date
                 )

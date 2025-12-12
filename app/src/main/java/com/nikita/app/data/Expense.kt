@@ -13,5 +13,6 @@ data class Expense(
     val amount: Double,
     val category: Category,
     val description: String = "",
+    val secondaryCategory: Category? = null,
     val timestamp: Long = System.currentTimeMillis()
 )
